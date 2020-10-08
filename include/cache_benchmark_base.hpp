@@ -45,7 +45,7 @@ namespace cache_benchmark {
         for (size_t i = 0; i < ITERATIONS_COUNT; ++i) iterate_chained_array_(chained_array);
         auto const end = Clock::now(); // instantly stop measuring
 
-        return std::chrono::duration_cast<Results::Duration>(end - start);
+        return std::chrono::duration_cast<Results::Duration>((end - start) / ITERATIONS_COUNT);
     }
 
     template <const size_t LENGTH, const size_t WARMUP_COUNT, const size_t ITERATIONS_COUNT>
