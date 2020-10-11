@@ -32,16 +32,19 @@ target_include_directories(cache-benchmark-base PUBLIC ${CMAKE_CURRENT_SOURCE_DI
 target_include_directories(tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(cache-benchmark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(tests GTest::gtest_main cache-benchmark-base)
+target_link_libraries(tests PRIVATE GTest::gtest_main cache-benchmark-base)
 
 enable_testing()
 add_test(NAME unit_tests COMMAND tests)
 
 if (BUILD_COVERAGE)
     function(ENABLE_PROJECT_COVERAGE PROJECT)
-        target_compile_options(${PROJECT} PRIVATE --coverage)
-        target_link_libraries(${PROJECT} --coverage)
-        add_coverage(${PROJECT})
+        target_compile_options(${PROJECT} INTERFACE -O0 -g --coverage)
+        if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+            target_link_options(${PROJECT} INTERFACE --coverage)
+        else()
+            target_link_libraries(${PROJECT} INTERFACE --coverage)
+        endif()
     endfunction()
 
     set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
